@@ -41,9 +41,11 @@ public partial class Page_LoginSaml : Page
         claims.Add(new Claim("lastName", user.LastName));
         claims.Add(new Claim("memberOf", "Default" /*"Wordpress Administrators"*/));
 
+        var returnUri = new System.Uri(request.AssertionConsumerServiceUrl.ToString() + "&RelayState=" + Request.QueryString["RelayState"]);
+	
         var response = new Saml2Response(
             new EntityId("http://www.acumatica.com"),
-            signingCertificate, request.AssertionConsumerServiceUrl,
+            signingCertificate, returnUri,
             request.Id, new ClaimsIdentity(claims.ToArray()));
 
         var command = Saml2Binding.Get(Saml2BindingType.HttpPost).Bind(response);
